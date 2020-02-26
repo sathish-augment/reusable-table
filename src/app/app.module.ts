@@ -1,29 +1,35 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
 
+// Modules
 import { MaterialModule } from './shared/material.module';
 import { SharedModule } from './shared/shared.module';
-
 import { AppRoutingModule } from './app-routing.module';
+
+// Components
 import { AppComponent } from './app.component';
-import { SharedTableComponent } from './shared-table/shared-table.component';
-import { ExampleComponent } from './example/example.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ExampleComponent } from './views/example/example.component';
+
+// Services
+import { GeneralService } from './views/general.service';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    SharedTableComponent,
     ExampleComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MaterialModule,
     SharedModule
   ],
-  providers: [],
+  providers: [GeneralService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,61 @@
+<!-- {{ displayedColumns | json }}
+{{ dataSource | json }} -->
+
+
+<div>
+    <mat-table #dataTable [dataSource]="dataSource">
+
+        <!-- Toggle Button Start -->
+        <ng-container matColumnDef="trigger">
+            <mat-header-cell *matHeaderCellDef fxFlex="60px">
+              <button mat-icon-button  fxLayout="column" fxLayoutAlign="center center" >
+                <mat-icon>menu</mat-icon>
+              </button>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row; let i = index" fxFlex="60px">
+              <button mat-icon-button (click)="expandedElement[i] = !expandedElement[i]; $event.stopPropagation()" >
+                <span class="btnToggleExpand" [ngClass]="[expandedElement[i] ?  'active' : 'inActive']"></span>
+              </button>
+            </mat-cell>
+        </ng-container>
+        <!-- Toggle Button End -->
+
+   
+        <ng-container matColumnDef="id"  >
+            <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+            <mat-cell *matCellDef="let user" fxFlex="60px"> {{user.id}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.name}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="username">
+            <mat-header-cell *matHeaderCellDef> Username </mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.username}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+            <mat-header-cell *matHeaderCellDef> Phone No. </mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.phone}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="website">
+            <mat-header-cell *matHeaderCellDef> Website </mat-header-cell>
+            <mat-cell *matCellDef="let user"> {{user.website}} </mat-cell>
+        </ng-container>
+    
+ 
+        <mat-header-row *matHeaderRowDef="visibleColumnsIds" class="matHeaderRow"></mat-header-row>
+
+        <mat-row *matRowDef="let row; columns: visibleColumnsIds" class="matRowVisible"></mat-row>
+
+    </mat-table>
+
+</div>
