@@ -34,7 +34,7 @@
 
         <ng-container matColumnDef="hidden">
             <mat-cell *matCellDef="let row" class="matCell" fxLayout="column" fxLayoutAlign="center start">
-                <p *ngFor="let hiddenColumn of hiddenColumns" fxLayout="row">
+                <p *ngFor="let hiddenColumn of hiddenColumns" fxLayout="row" class="m8">
                     <strong>
                         {{ hiddenColumn.label }}: 
                     </strong>

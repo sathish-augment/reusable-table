@@ -38,9 +38,11 @@ class UserDataSource extends DataSource<Column>{
   }
    
   connect():Observable<Column[]>{
-    //return this.userService.getUser();
+    //return this.userService.getUser()
+    let result  = this.userService.getUsers()
     const rows = [];
     data.forEach(element => rows.push(element, {detailRow: true, element}));
+    console.log(result);
     return of(rows);
   }
 
