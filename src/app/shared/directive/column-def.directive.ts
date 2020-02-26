@@ -1,10 +1,11 @@
-import { Directive } from '@angular/core';
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import { TemplatePortalDirective } from '@angular/cdk/portal';
 
-@Directive({
-  selector: '[appColumnDef]'
-})
-export class ColumnDefDirective {
+@Directive({selector: '[qtColumnDef]'})
+export class ColumnDefDirective extends TemplatePortalDirective {
 
-  constructor() { }
-
+  @Input() qtColumnDef: string;
+  constructor(templateRef: TemplateRef<any>, viewContainerRef: ViewContainerRef) {
+    super(templateRef, viewContainerRef);
+  }
 }

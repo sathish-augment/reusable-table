@@ -1,34 +1,27 @@
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-  AfterContentInit,
-  QueryList,
-  ContentChildren,
-  TemplateRef,
-  EventEmitter,
-  Output,
-  ElementRef,
-  OnDestroy,
-  ViewChild,
-  ChangeDetectorRef,
-  NgZone,
-  OnInit
-} from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy, AfterContentInit, QueryList, ContentChildren, TemplateRef,
+  EventEmitter, Output, ElementRef, OnDestroy, ViewChild, ChangeDetectorRef, NgZone } from "@angular/core";
 import { DataSource } from "@angular/cdk/collections";
 import { ViewportRuler } from "@angular/cdk/scrolling";
 import { Subscription } from "rxjs";
- 
-import { MatTable } from "@angular/material";
+import { MatTableDataSource, MatTable } from '@angular/material';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Column } from './../column.type';
+import { ColumnDefDirective } from './../../shared/directive/column-def.directive';
 
 @Component({
   selector: 'shared-table',
   templateUrl: './shared-table.component.html',
-  styleUrls: ['./shared-table.component.scss']
+  styleUrls: ['./shared-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0', visibility: 'hidden'})),
+      state('expanded', style({height: '*', visibility: 'visible'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
-export class SharedTableComponent {
+export class SharedTableComponent implements AfterContentInit, OnDestroy  {
 
   public MIN_COLUMN_WIDTH:number = 200;
 
@@ -39,8 +32,18 @@ export class SharedTableComponent {
   // Shared Variables
   @Input() dataSource: DataSource<any>;
   @Input() columnsdef: Column[];
-  @ViewChild('dataTable', { static: true })  dataTable: ElementRef;
+  @ViewChild('dataTable', { static: true })  dataTable: MatTable<Element>;
+
+  @ContentChildren(ColumnDefDirective)
+  _templates: QueryList<ColumnDefDirective>;
+
   private rulerSubscription: Subscription;
+
+  private _templateMap: Map<string, TemplateRef<any>> = new Map<
+    string,
+    TemplateRef<any>
+  >();
+  
 
   get visibleColumnsIds() {
     const visibleColumnsIds = this.visibleColumns.map(column => column.id)
@@ -52,9 +55,12 @@ export class SharedTableComponent {
     return this.hiddenColumns.map(column => column.id)
   }
 
-  areCollumnsHidden = () => this.hiddenColumns.length
-  isExpansionDetailRow = (row) => row.hasOwnProperty('detailRow');
-  isExpansionDetailRow2 = (row) => !row.hasOwnProperty('detailRow');
+  //isExpansionDetailRow = (row) => row.hasOwnProperty('detailRow');
+  isExpansionDetailRow = (index, item) =>{
+    let res = item.hasOwnProperty('detailRow');
+    return res;
+  }
+
 
   constructor(private ruler: ViewportRuler, private _changeDetectorRef: ChangeDetectorRef, private zone: NgZone) {
     this.rulerSubscription = this.ruler.change(500).subscribe(data => {
@@ -68,7 +74,15 @@ export class SharedTableComponent {
    * Lifecycle Hook Start
    */
   ngAfterContentInit() {
-     this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth);
+     for (let i: number = 0; i < this._templates.toArray().length; i++) {
+      this._templateMap.set(
+        this._templates.toArray()[i].qtColumnDef,
+        this._templates.toArray()[i].templateRef
+      );
+    }
+    console.log(this._templateMap);
+
+    this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth);
   }
 
   ngOnDestroy() {
@@ -102,10 +116,13 @@ export class SharedTableComponent {
       this.visibleColumns = this.columnsdef.filter(column => column.visible);
       this.hiddenColumns = this.columnsdef.filter(column => !column.visible)
     })
+    console.log(this.columnsdef)
 
     this._changeDetectorRef.detectChanges();
   }
 
- 
+  getTemplateRef(name: string): TemplateRef<any> {
+    return this._templateMap.get(name);
+  } 
 
 }

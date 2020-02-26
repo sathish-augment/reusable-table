@@ -3,58 +3,60 @@
 
 
 <div>
-    <mat-table #dataTable [dataSource]="dataSource">
+    <mat-table #dataTable [dataSource]="dataSource" matSort>
 
         <!-- Toggle Button Start -->
         <ng-container matColumnDef="trigger">
-            <mat-header-cell *matHeaderCellDef fxFlex="60px">
+            <mat-header-cell *matHeaderCellDef fxFlex="70px">
               <button mat-icon-button  fxLayout="column" fxLayoutAlign="center center" >
                 <mat-icon>menu</mat-icon>
               </button>
             </mat-header-cell>
-            <mat-cell *matCellDef="let row; let i = index" fxFlex="60px">
-              <button mat-icon-button (click)="expandedElement[i] = !expandedElement[i]; $event.stopPropagation()" >
-                <span class="btnToggleExpand" [ngClass]="[expandedElement[i] ?  'active' : 'inActive']"></span>
-              </button>
+            <mat-cell *matCellDef="let row; let i = index" fxFlex="70px">
+                <span  (click)="expandedElement[i] = !expandedElement[i]; $event.stopPropagation()"  class="btnToggleExpand" [ngClass]="[expandedElement[i] ?  'active' : 'inActive']"></span>
             </mat-cell>
         </ng-container>
         <!-- Toggle Button End -->
 
    
-        <ng-container matColumnDef="id"  >
-            <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
-            <mat-cell *matCellDef="let user" fxFlex="60px"> {{user.id}} </mat-cell>
-        </ng-container>
+        <ng-container [matColumnDef]="column.id" *ngFor="let column of visibleColumns">
+            <!-- Header cell -->
+            <mat-header-cell *matHeaderCellDef [fxFlex]="column.width + 'px'" mat-sort-header>{{ column.label }}</mat-header-cell>
+        
+            <!-- Body cell -->
+            <mat-cell *matCellDef="let row" [fxFlex]="column.width + 'px'">
+              <!-- Default -->
+              <ng-container *ngIf="!getTemplateRef(column.id); else customCell">{{ row[column.id] }}</ng-container>
+        
+              <!-- Custom -->
+              <ng-template #customCell [ngTemplateOutlet]="getTemplateRef(column.id)" [ngTemplateOutletContext]="{ row: row }"></ng-template>
+            </mat-cell>
+          </ng-container>
 
-        <ng-container matColumnDef="name">
-            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-            <mat-cell *matCellDef="let user"> {{user.name}} </mat-cell>
-        </ng-container>
 
-        <ng-container matColumnDef="username">
-            <mat-header-cell *matHeaderCellDef> Username </mat-header-cell>
-            <mat-cell *matCellDef="let user"> {{user.username}} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="email">
-            <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
-            <mat-cell *matCellDef="let user"> {{user.email}} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="phone">
-            <mat-header-cell *matHeaderCellDef> Phone No. </mat-header-cell>
-            <mat-cell *matCellDef="let user"> {{user.phone}} </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="website">
-            <mat-header-cell *matHeaderCellDef> Website </mat-header-cell>
-            <mat-cell *matCellDef="let user"> {{user.website}} </mat-cell>
+        <ng-container matColumnDef="hidden">
+            <mat-cell *matCellDef="let row" class="matCell" fxLayout="column" fxLayoutAlign="center start">
+                <p *ngFor="let hiddenColumn of hiddenColumns" fxLayout="row">
+                    <strong>
+                        {{ hiddenColumn.label }}: 
+                    </strong>
+                    <span>
+                        {{ row.element[hiddenColumn.id] }}
+                    </span>
+                </p>
+            </mat-cell>
         </ng-container>
     
  
         <mat-header-row *matHeaderRowDef="visibleColumnsIds" class="matHeaderRow"></mat-header-row>
 
         <mat-row *matRowDef="let row; columns: visibleColumnsIds" class="matRowVisible"></mat-row>
+
+        <!-- Body row definition for hidden columns -->
+        <mat-row *matRowDef="let row; let i = index; columns: ['hidden']; when: isExpansionDetailRow" 
+    [@detailExpand]="hiddenColumns.length && expandedElement[i - 1] ? 'expanded' : 'collapsed'"
+    style="overflow: hidden" class="matRowHidden">
+  </mat-row>
 
     </mat-table>
 
