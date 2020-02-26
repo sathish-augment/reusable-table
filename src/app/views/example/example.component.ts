@@ -18,7 +18,7 @@ export class ExampleComponent {
   public dataSource = new UserDataSource(this.service);
 
   columns:Column[]=[
-    {id:'id',label:'S. No.',hideOrder:0,width:70},
+    {id:'id',label:'S. No.',hideOrder:0,width:75},
     {id:'name',label:'Name',hideOrder:1},
     {id:'username',label:'Username',hideOrder:3},
     {id:'email',label:'Email',hideOrder:4},
@@ -41,7 +41,6 @@ class UserDataSource extends DataSource<Column>{
     //return this.userService.getUser();
     const rows = [];
     data.forEach(element => rows.push(element, {detailRow: true, element}));
-    console.log(rows);
     return of(rows);
   }
 

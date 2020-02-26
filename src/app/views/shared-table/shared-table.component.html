@@ -8,9 +8,7 @@
         <!-- Toggle Button Start -->
         <ng-container matColumnDef="trigger">
             <mat-header-cell *matHeaderCellDef fxFlex="70px">
-              <button mat-icon-button  fxLayout="column" fxLayoutAlign="center center" >
                 <mat-icon>menu</mat-icon>
-              </button>
             </mat-header-cell>
             <mat-cell *matCellDef="let row; let i = index" fxFlex="70px">
                 <span  (click)="expandedElement[i] = !expandedElement[i]; $event.stopPropagation()"  class="btnToggleExpand" [ngClass]="[expandedElement[i] ?  'active' : 'inActive']"></span>
@@ -54,9 +52,9 @@
 
         <!-- Body row definition for hidden columns -->
         <mat-row *matRowDef="let row; let i = index; columns: ['hidden']; when: isExpansionDetailRow" 
-    [@detailExpand]="hiddenColumns.length && expandedElement[i - 1] ? 'expanded' : 'collapsed'"
-    style="overflow: hidden" class="matRowHidden">
-  </mat-row>
+            [@detailExpand]="hiddenColumns.length && expandedElement[i - 1] ? 'expanded' : 'collapsed'"
+            style="overflow: hidden" class="matRowHidden">
+        </mat-row>
 
     </mat-table>
 

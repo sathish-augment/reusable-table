@@ -57,6 +57,7 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
 
   //isExpansionDetailRow = (row) => row.hasOwnProperty('detailRow');
   isExpansionDetailRow = (index, item) =>{
+    console.log(index,item)
     let res = item.hasOwnProperty('detailRow');
     return res;
   }
@@ -80,7 +81,6 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
         this._templates.toArray()[i].templateRef
       );
     }
-    console.log(this._templateMap);
 
     this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth);
   }
@@ -116,7 +116,6 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
       this.visibleColumns = this.columnsdef.filter(column => column.visible);
       this.hiddenColumns = this.columnsdef.filter(column => !column.visible)
     })
-    console.log(this.columnsdef)
 
     this._changeDetectorRef.detectChanges();
   }
