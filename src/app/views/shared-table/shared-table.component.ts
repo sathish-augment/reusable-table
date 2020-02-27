@@ -3,7 +3,7 @@ import { Component, Input, ChangeDetectionStrategy, AfterContentInit, QueryList,
 import { DataSource } from "@angular/cdk/collections";
 import { ViewportRuler } from "@angular/cdk/scrolling";
 import { Subscription } from "rxjs";
-import { MatTableDataSource, MatTable } from '@angular/material';
+import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Column } from './../column.type';
 import { ColumnDefDirective } from './../../shared/directive/column-def.directive';
@@ -30,9 +30,10 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
   expandedElement = {}
 
   // Shared Variables
-  @Input() dataSource: DataSource<any>;
+  @Input() dataSource: MatTableDataSource<any>;
   @Input() columnsdef: Column[];
   @ViewChild('dataTable', { static: true })  dataTable: MatTable<Element>;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   @ContentChildren(ColumnDefDirective)
   _templates: QueryList<ColumnDefDirective>;
@@ -57,14 +58,14 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
 
   //isExpansionDetailRow = (row) => row.hasOwnProperty('detailRow');
   isExpansionDetailRow = (index, item) =>{
-    console.log(index,item)
+    //console.log(index,item)
     let res = item.hasOwnProperty('detailRow');
     return res;
   }
 
 
   constructor(private ruler: ViewportRuler, private _changeDetectorRef: ChangeDetectorRef, private zone: NgZone) {
-    this.rulerSubscription = this.ruler.change(500).subscribe(data => {
+    this.rulerSubscription = this.ruler.change(100).subscribe(data => {
       // accesing clientWidth cause browser layout, cache it!
       // const tableWidth = this.table.nativeElement.clientWidth;
       this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth); 
@@ -83,6 +84,7 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
     }
 
     this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth);
+    this.dataSource.sort = this.sort;
   }
 
   ngOnDestroy() {
@@ -94,6 +96,7 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
    */
   
   toggleColumns(tableWidth: number){
+    //console.log('tableWidth',tableWidth)
     this.zone.runOutsideAngular(() => {
       const sortedColumns = this.columnsdef.slice()
         .map((column, index) => ({ ...column, order: index }))
@@ -101,6 +104,7 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
 
       for (const column of sortedColumns) {
         const columnWidth = column.width ? column.width : this.MIN_COLUMN_WIDTH;
+        //console.log('columnWidth',columnWidth)
 
         if (column.hideOrder && tableWidth < columnWidth) {
           column.visible = false;
