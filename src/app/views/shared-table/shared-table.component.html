@@ -1,7 +1,7 @@
 <div class="shredTable">
 
-    <div class="example-header">
-        <mat-form-field>
+    <div class="filterHeader">
+        <mat-form-field >
           <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
         </mat-form-field>
     </div>
@@ -28,7 +28,21 @@
             <!-- Body cell -->
             <mat-cell *matCellDef="let row" [fxFlex]="column.width + 'px'">
               <!-- Default -->
-              <ng-container>{{ row[column.id] }}</ng-container>
+              <ng-container *ngIf="!column.role">{{ row[column.id] }}</ng-container>
+              <!-- View Action -->
+              <div *ngIf="column.role" class="tableRowAction">
+                <ng-container *ngIf="column.role && column.role[0].view">
+                    <i class="material-icons" matTooltip="{{ column.role[0].option?.label }}">remove_red_eye</i>
+                  </ng-container>
+                  <!-- Edit Action -->
+                  <ng-container *ngIf="column.role && column.role[1].edit">
+                    <i class="material-icons" matTooltip="{{ column.role[1].option?.label }}">edit</i>
+                  </ng-container>
+                  <!-- Edit Action -->
+                  <ng-container *ngIf="column.role && column.role[2].delete">
+                    <i class="material-icons" matTooltip="{{ column.role[2].option?.label }}">restore_from_trash</i>
+                  </ng-container>
+              </div>
         
             </mat-cell>
           </ng-container>
