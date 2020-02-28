@@ -1,10 +1,10 @@
 import { Component, Input, ChangeDetectionStrategy, AfterContentInit, QueryList, ContentChildren, TemplateRef,
   EventEmitter, Output, ElementRef, OnDestroy, ViewChild, ChangeDetectorRef, NgZone } from "@angular/core";
-import { DataSource } from "@angular/cdk/collections";
 import { ViewportRuler } from "@angular/cdk/scrolling";
 import { Subscription } from "rxjs";
-import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
+import { MatTableDataSource, MatTable, MatSort, PageEvent, MatPaginator } from '@angular/material';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+ 
 import { Column } from './../column.type';
 
 @Component({
@@ -28,11 +28,22 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
   hiddenColumns: Column[];
   expandedElement = {}
 
+  // MatPaginator Inputs
+  length = 100;
+  pageSize = 10;
+  pageSizeOptions: number[] = [5, 10, 25, 100];
+
+  // MatPaginator Output
+  pageEvent: PageEvent;
+
   // Shared Variables
   @Input() dataSource: MatTableDataSource<any>;
   @Input() columnsdef: Column[];
+
+  // MatTable
   @ViewChild('dataTable', { static: true })  dataTable: MatTable<Element>;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator,{static:true}) paginator: MatPaginator;
 
   private rulerSubscription: Subscription;
 
@@ -47,12 +58,7 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
     return this.hiddenColumns.map(column => column.id)
   }
 
-  //isExpansionDetailRow = (row) => row.hasOwnProperty('detailRow');
-  isExpansionDetailRow = (index, item) =>{
-    //console.log(index,item)
-    let res = item.hasOwnProperty('detailRow');
-    return res;
-  }
+  isExpansionDetailRow = (index, item) => item.hasOwnProperty('detailRow');
 
 
   constructor(private ruler: ViewportRuler, private _changeDetectorRef: ChangeDetectorRef, private zone: NgZone) {
@@ -69,6 +75,7 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
   ngAfterContentInit() {
     this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth);
     this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
   
     this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string) => {  
       const value: any = data[sortHeaderId]; 
