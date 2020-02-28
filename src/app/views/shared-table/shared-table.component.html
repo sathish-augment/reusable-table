@@ -1,8 +1,4 @@
-<!-- {{ displayedColumns | json }}
-{{ dataSource | json }} -->
-
-
-<div>
+<div class="shredTable">
     <mat-table #dataTable [dataSource]="dataSource" matSort multiTemplateDataRows>
 
         <!-- Toggle Button Start -->
@@ -11,7 +7,8 @@
                 <mat-icon>menu</mat-icon>
             </mat-header-cell>
             <mat-cell *matCellDef="let row; let i = dataIndex;" fxFlex="70px">
-                <span  (click)="expandedElement[i] = !expandedElement[i]; $event.stopPropagation()"  class="btnToggleExpand" [ngClass]="[expandedElement[i] ?  'active' : 'inActive']"></span>
+                <span  (click)="expandedElement[row.recId] = !expandedElement[row.recId]" 
+                [ngClass]="[expandedElement[row.recId] ?  'active' : 'inActive']"  class="btnToggleExpand"></span>
             </mat-cell>
         </ng-container>
         <!-- Toggle Button End -->
@@ -24,16 +21,14 @@
             <!-- Body cell -->
             <mat-cell *matCellDef="let row" [fxFlex]="column.width + 'px'">
               <!-- Default -->
-              <ng-container *ngIf="!getTemplateRef(column.id); else customCell">{{ row[column.id] }}</ng-container>
+              <ng-container>{{ row[column.id] }}</ng-container>
         
-              <!-- Custom -->
-              <ng-template #customCell [ngTemplateOutlet]="getTemplateRef(column.id)" [ngTemplateOutletContext]="{ row: row }"></ng-template>
             </mat-cell>
           </ng-container>
 
 
         <ng-container matColumnDef="hidden">
-            <mat-cell *matCellDef="let row" class="matCell" fxLayout="column" fxLayoutAlign="center start">
+            <mat-cell *matCellDef="let row;let i = dataIndex;" class="matCell" fxLayout="column" fxLayoutAlign="center start">
                 <p *ngFor="let hiddenColumn of hiddenColumns" fxLayout="row" class="m8">
                     <strong>
                         {{ hiddenColumn.label }}: 
@@ -48,12 +43,11 @@
  
         <mat-header-row *matHeaderRowDef="visibleColumnsIds" class="matHeaderRow"></mat-header-row>
 
-        <mat-row *matRowDef="let row; let i = dataIndex; columns: visibleColumnsIds" class="matRowVisible visible-row-{{i}}"></mat-row>
+        <mat-row *matRowDef="let row; let i = dataIndex; columns: visibleColumnsIds" class="matRowVisible visible-row-{{row.recId}}"></mat-row>
 
         <!-- Body row definition for hidden columns -->
-        <mat-row *matRowDef="let row; let i = dataIndex; columns: ['hidden'];" 
-        [@detailExpand]="hiddenColumns.length && expandedElement[i] ? 'expanded' : 'collapsed'"
-        style="overflow: hidden" class="matRowHidden hidden-row-{{i}}"></mat-row>
+        <mat-row *matRowDef="let row; let i = dataIndex; columns: ['hidden'];" [@detailExpand]="expandedElement[row.recId] ? 'expanded' : 'collapsed'"
+            style="overflow: hidden" class="matRowHidden hidden-row-{{row.recId}}" [ngClass]="expandedElement[row.recId] ? 'expanded' : 'collapsed'"></mat-row>
 
     </mat-table>
 

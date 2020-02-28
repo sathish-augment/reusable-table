@@ -1,3 +1,10 @@
+  .m8{
+    margin: 8px;
+  }
+  .expanded {
+    height: min-content !important;
+    visibility: visible !important;
+  }
 
  .btnToggleExpand{
     position: relative;
@@ -34,8 +41,4 @@
       background-color: #31b131;
   }
 
-}
-
-.m8{
-  margin: 8px;
 }

@@ -35,13 +35,17 @@ export class ExampleComponent implements OnInit {
   ngOnInit(){
 
     this.service.getUsers().subscribe( result => {
-      this.dataSource.data = result;
-      // if(result.length > 0){
-      //   const rows = [];
-      //   result.forEach(element => rows.push(element, {detailRow: true, element}));
-      //   console.log(rows);
-      //   this.dataSource.data = rows;
-      // }
+      
+      if(result.length > 0){
+        const rows = [];
+
+        result.forEach((element:any,index:number)=> {
+          element['recId'] = index +1;
+          rows.push(element)
+        });
+
+        this.dataSource.data = rows;
+      }
     })
     
   }

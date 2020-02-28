@@ -6,7 +6,6 @@ import { Subscription } from "rxjs";
 import { MatTableDataSource, MatTable, MatSort } from '@angular/material';
 import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Column } from './../column.type';
-import { ColumnDefDirective } from './../../shared/directive/column-def.directive';
 
 @Component({
   selector: 'shared-table',
@@ -35,17 +34,9 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
   @ViewChild('dataTable', { static: true })  dataTable: MatTable<Element>;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  @ContentChildren(ColumnDefDirective)
-  _templates: QueryList<ColumnDefDirective>;
-
   private rulerSubscription: Subscription;
 
-  private _templateMap: Map<string, TemplateRef<any>> = new Map<
-    string,
-    TemplateRef<any>
-  >();
-  
-
+ 
   get visibleColumnsIds() {
     const visibleColumnsIds = this.visibleColumns.map(column => column.id)
 
@@ -76,15 +67,14 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
    * Lifecycle Hook Start
    */
   ngAfterContentInit() {
-     for (let i: number = 0; i < this._templates.toArray().length; i++) {
-      this._templateMap.set(
-        this._templates.toArray()[i].qtColumnDef,
-        this._templates.toArray()[i].templateRef
-      );
-    }
-
     this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth);
     this.dataSource.sort = this.sort;
+  
+    this.dataSource.sortingDataAccessor = (data: any, sortHeaderId: string) => {  
+      const value: any = data[sortHeaderId]; 
+      return typeof value === "string" ? value.toLowerCase() : value; 
+    };    
+
   }
 
   ngOnDestroy() {
@@ -124,8 +114,5 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
     this._changeDetectorRef.detectChanges();
   }
 
-  getTemplateRef(name: string): TemplateRef<any> {
-    return this._templateMap.get(name);
-  } 
 
 }
