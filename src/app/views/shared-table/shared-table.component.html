@@ -1,4 +1,11 @@
 <div class="shredTable">
+
+    <div class="example-header">
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+    </div>
+
     <mat-table #dataTable [dataSource]="dataSource" matSort multiTemplateDataRows>
 
         <!-- Toggle Button Start -->

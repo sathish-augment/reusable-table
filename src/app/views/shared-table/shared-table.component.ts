@@ -1,11 +1,13 @@
 import { Component, Input, ChangeDetectionStrategy, AfterContentInit, QueryList, ContentChildren, TemplateRef,
-  EventEmitter, Output, ElementRef, OnDestroy, ViewChild, ChangeDetectorRef, NgZone } from "@angular/core";
+  EventEmitter, Output, ElementRef, OnDestroy, ViewChild, ChangeDetectorRef, NgZone, OnInit } from "@angular/core";
 import { ViewportRuler } from "@angular/cdk/scrolling";
-import { Subscription } from "rxjs";
+import { FormControl } from '@angular/forms';
 import { MatTableDataSource, MatTable, MatSort, PageEvent, MatPaginator } from '@angular/material';
 import { trigger, state, style, animate, transition } from '@angular/animations';
+import { Subscription } from "rxjs";
  
 import { Column } from './../column.type';
+
 
 @Component({
   selector: 'shared-table',
@@ -20,17 +22,21 @@ import { Column } from './../column.type';
     ]),
   ],
 })
-export class SharedTableComponent implements AfterContentInit, OnDestroy  {
+export class SharedTableComponent implements AfterContentInit, OnDestroy, OnInit  {
 
   public MIN_COLUMN_WIDTH:number = 200;
 
+  // Filter Fields
+  generalFilter = new FormControl
+
+  // Visible Hidden Columns
   visibleColumns: Column[];
   hiddenColumns: Column[];
   expandedElement = {}
 
   // MatPaginator Inputs
   length = 100;
-  pageSize = 10;
+  pageSize = 5;
   pageSizeOptions: number[] = [5, 10, 25, 100];
 
   // MatPaginator Output
@@ -72,6 +78,9 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
   /**
    * Lifecycle Hook Start
    */
+
+  ngOnInit(){    
+  }
   ngAfterContentInit() {
     this.toggleColumns(this.dataTable['_elementRef'].nativeElement.clientWidth);
     this.dataSource.sort = this.sort;
@@ -91,6 +100,13 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy  {
   /**
    * Lifecycle Hook End
    */
+
+  applyFilter(filterValue: string) {
+    filterValue = filterValue.trim(); // Remove whitespace
+    filterValue = filterValue.toLowerCase(); // MatTableDataSource defaults to lowercase matches
+    this.dataSource.filter = filterValue;
+  }
+
   
   toggleColumns(tableWidth: number){
     //console.log('tableWidth',tableWidth)
