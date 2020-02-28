@@ -3,14 +3,14 @@
 
 
 <div>
-    <mat-table #dataTable [dataSource]="dataSource" matSort >
+    <mat-table #dataTable [dataSource]="dataSource" matSort multiTemplateDataRows>
 
         <!-- Toggle Button Start -->
         <ng-container matColumnDef="trigger">
             <mat-header-cell *matHeaderCellDef fxFlex="70px">
                 <mat-icon>menu</mat-icon>
             </mat-header-cell>
-            <mat-cell *matCellDef="let row; let i = index" fxFlex="70px">
+            <mat-cell *matCellDef="let row; let i = dataIndex;" fxFlex="70px">
                 <span  (click)="expandedElement[i] = !expandedElement[i]; $event.stopPropagation()"  class="btnToggleExpand" [ngClass]="[expandedElement[i] ?  'active' : 'inActive']"></span>
             </mat-cell>
         </ng-container>
@@ -39,7 +39,7 @@
                         {{ hiddenColumn.label }}: 
                     </strong>
                     <span>
-                        {{ row.element[hiddenColumn.id] }}
+                        {{ row[hiddenColumn.id] }}
                     </span>
                 </p>
             </mat-cell>
@@ -48,13 +48,12 @@
  
         <mat-header-row *matHeaderRowDef="visibleColumnsIds" class="matHeaderRow"></mat-header-row>
 
-        <mat-row *matRowDef="let row; columns: visibleColumnsIds" class="matRowVisible"></mat-row>
+        <mat-row *matRowDef="let row; let i = dataIndex; columns: visibleColumnsIds" class="matRowVisible visible-row-{{i}}"></mat-row>
 
         <!-- Body row definition for hidden columns -->
-        <mat-row *matRowDef="let row; let i = index; columns: ['hidden']; when: isExpansionDetailRow" 
-            [@detailExpand]="hiddenColumns.length && expandedElement[i - 1] ? 'expanded' : 'collapsed'"
-            style="overflow: hidden" class="matRowHidden">
-        </mat-row>
+        <mat-row *matRowDef="let row; let i = dataIndex; columns: ['hidden'];" 
+        [@detailExpand]="hiddenColumns.length && expandedElement[i] ? 'expanded' : 'collapsed'"
+        style="overflow: hidden" class="matRowHidden hidden-row-{{i}}"></mat-row>
 
     </mat-table>
 
