@@ -46,8 +46,8 @@
         <mat-row *matRowDef="let row; let i = dataIndex; columns: visibleColumnsIds" class="matRowVisible visible-row-{{row.recId}}"></mat-row>
 
         <!-- Body row definition for hidden columns -->
-        <mat-row *matRowDef="let row; let i = dataIndex; columns: ['hidden'];" [@detailExpand]="expandedElement[row.recId] ? 'expanded' : 'collapsed'"
-            style="overflow: hidden" class="matRowHidden hidden-row-{{row.recId}}" [ngClass]="expandedElement[row.recId] ? 'expanded' : 'collapsed'"></mat-row>
+        <mat-row *matRowDef="let row; let i = dataIndex; columns: ['hidden'];" [@detailExpand]="expandedElement.length && expandedElement[row.recId] ? 'expanded' : 'collapsed'"
+            style="overflow: hidden" class="matRowHidden hidden-row-{{row.recId}} hidColLength-{{hiddenColumns.length}}" [ngClass]="expandedElement[row.recId] ? 'expanded' : 'collapsed'"></mat-row>
 
     </mat-table>
 
