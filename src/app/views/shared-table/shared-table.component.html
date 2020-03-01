@@ -28,21 +28,23 @@
             <!-- Body cell -->
             <mat-cell *matCellDef="let row" [fxFlex]="column.width + 'px'">
               <!-- Default -->
-              <ng-container *ngIf="!column.role">{{ row[column.id] }}</ng-container>
+              <ng-container *ngIf="!column.roles">{{ row[column.id] }}</ng-container>
               <!-- View Action -->
-              <div *ngIf="column.role" class="tableRowAction">
-                <ng-container *ngIf="column.role && column.role[0].view">
-                    <i class="material-icons" matTooltip="{{ column.role[0].option?.label }}">remove_red_eye</i>
-                  </ng-container>
-                  <!-- Edit Action -->
-                  <ng-container *ngIf="column.role && column.role[1].edit">
-                    <i class="material-icons" matTooltip="{{ column.role[1].option?.label }}">edit</i>
-                  </ng-container>
-                  <!-- Edit Action -->
-                  <ng-container *ngIf="column.role && column.role[2].delete">
-                    <i class="material-icons" matTooltip="{{ column.role[2].option?.label }}">restore_from_trash</i>
-                  </ng-container>
-              </div>
+              <!-- {{ column.roles | json }} -->
+              <ng-container *ngIf="column.roles">
+                <div *ngFor="let role of column.roles; index as i;" class="tableRowAction">
+                    <!-- Link Start -->
+                    <ng-container *ngIf="role.type == 'link'">
+                        <span [innerHTML]="role.label"  (click)="sharedAction('link',row.id,role.for)"></span>
+                    </ng-container>
+                    <!-- Link End -->
+                    <ng-container *ngIf="role.type == 'toggle'">
+                        <mat-slide-toggle (click)="sharedAction('link',row.id,role.for)">
+                            <span [innerHTML]="role.label"></span>
+                        </mat-slide-toggle>
+                    </ng-container>
+                </div>
+              </ng-container>
         
             </mat-cell>
           </ng-container>

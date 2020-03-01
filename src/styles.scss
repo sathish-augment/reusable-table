@@ -2,3 +2,13 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.tableRowAction{
+
+    .material-icons{
+      font-size: 16px;
+      margin: 5px;
+      padding: 2px;
+      cursor: pointer !important;
+    }
+  }

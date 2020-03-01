@@ -26,25 +26,16 @@ export class ExampleComponent implements OnInit {
     {id:'email',label:'Email',hideOrder:4},
     {id:'phone',label:'Phone No.',hideOrder:5},
     {id:'website',label:'Website',hideOrder:6},
-    {id:'action',label:'Action',hideOrder:0,width:120,role:
-      [
-        { view: true,
-          option:{
-            label: 'View',
-            url: '/test'
-          } 
-        },
-        { edit: true,
-          option:{
-            label: 'Edit',
-            url: '/test'
-          } 
-        },
-        { delete: true,
-          option:{
-            label: 'Delete',
-            url: '/test'
-          } 
+    {id:'action',label:'Action',hideOrder:0,width:250,roles:
+      [ 
+        {
+          type: 'toggle',
+          label: 'Test',
+          for: 'test'
+        },{
+          type: 'link',
+          label: '<i class="icon material-icons" matTooltip="View">remove_red_eye</i>',
+          for: 'view'
         }
       ]
     }
@@ -70,6 +61,10 @@ export class ExampleComponent implements OnInit {
       }
     })
     
+  }
+
+  public onNumberGenerated(randomNumber: number) {
+    console.log(randomNumber)
   }
  
 }

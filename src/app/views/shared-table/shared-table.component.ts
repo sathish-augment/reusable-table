@@ -51,6 +51,8 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy, OnInit
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   @ViewChild(MatPaginator,{static:true}) paginator: MatPaginator;
 
+  @Output() private sharedEventValue = new EventEmitter<any>();
+
   private rulerSubscription: Subscription;
 
  
@@ -135,6 +137,10 @@ export class SharedTableComponent implements AfterContentInit, OnDestroy, OnInit
     })
 
     this._changeDetectorRef.detectChanges();
+  }
+
+  public sharedAction(type:string,value:number,actionFor:string){
+    this.sharedEventValue.emit({type:type,value:value,for:actionFor})
   }
 
 

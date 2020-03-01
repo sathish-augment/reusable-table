@@ -4,27 +4,9 @@ export interface Column {
     label: string,
     hideOrder: number,
     width?: number,
-    role?: [
-        { 
-            view?:boolean,
-            option?:{
-                label:string,
-                url:string
-            }
-        },
-        { 
-            edit?:boolean,
-            option?:{
-                label:string,
-                url:string
-            }
-        },
-        { 
-            delete?:boolean,
-            option?:{
-                label:string,
-                url:string
-            }
-        }
-    ]
+    roles?: { 
+        type:string // button, link, toggle
+        label:string,
+        for:string
+    }[]
 }
